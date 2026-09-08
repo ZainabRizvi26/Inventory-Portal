@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Docking Station | Inventory Portal</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body class="dashboard-body">
+  <header class="dashboard-nav">
+    <a class="dashboard-brand" href="dashboard.html"><img src="images/rohde-schwarz-logo.jpg" alt="Rohde & Schwarz" /><span>Inventory Portal</span></a>
+    <nav class="dashboard-links">
+      <a href="dashboard.html"><span>🏠</span> Dashboard</a>
+      <a class="active" href="accessory.html"><span>💻</span> IT Accessory</a>
+      <a href="port-mapping.html"><span>🌐</span> Port Mapping</a>
+      <a href="data-centre.html"><span>🏢</span> Data Centre</a>
+    </nav>
+    <div class="dashboard-user">
+      
+      <button id="profile-menu-button" class="profile-menu-button" aria-expanded="false"><span id="user-avatar" class="avatar">A</span><span class="role-icon" title="Admin">👑</span><span id="user-name">Admin User</span><span>⌄</span></button>
+      <div id="profile-menu" class="profile-menu"><a href="profile.html">⚙ &nbsp; Profile Settings</a><a href="#" id="change-password-link">⚿ &nbsp; Change Password</a><a href="index.html" id="logout-link">↪ &nbsp; Logout</a></div>
+    </div>
+  </header>
+
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+            <nav class="sidebar-links">
+        <a href="dashboard.html"><span>🏠</span> Dashboard</a>
+      </nav>
+<div class="sidebar-group open">
+        <button class="sidebar-group-toggle" type="button"><span>💻</span> IT Accessory <b class="chev">⌃</b></button>
+        <div class="sidebar-sub">
+          <a href="laptop.html">Laptop</a>
+          <a href="lcd.html">LCD</a>
+          <a href="keyboard-mouse.html">Keyboard / Mouse</a>
+          <a href="docking-station.html" class="active">Docking Station</a>
+          <a href="printer.html">Printer</a>
+          <a href="network-printer.html">Network Printer</a>
+        </div>
+      </div>
+      <nav class="sidebar-links">
+        <a href="port-mapping.html"><span>🌐</span> Port Mapping</a>
+      </nav>
+<div class="sidebar-group">
+        <button class="sidebar-group-toggle" type="button"><span>🏢</span> Data Centre <b class="chev">⌃</b></button>
+        <div class="sidebar-sub">
+          <a href="cctv-camera.html">CCTV Camera</a>
+          <a href="server.html">Server</a>
+          <a href="switches.html">Switches</a>
+          <a href="ups.html">UPS</a>
+          <a href="ac.html">AC</a>
+          <a href="access-control.html">Access Control System</a>
+        </div>
+      </div>
+      <nav class="sidebar-links">
+        <a href="users.html" class="admin-only"><span>👤</span> Users</a>
+        <a href="#"><span>⚙</span> Settings</a>
+      </nav>
+        </aside>
+
+    <main class="admin-main" data-type="docking_station">
+      <p class="breadcrumb"><a href="dashboard.html">Home</a> <span>›</span> <a href="accessory.html">IT Accessory</a> <span>›</span> Docking Station</p>
+
+      <div class="detail-hero type-docking_station">
+        <span class="hero-icon">🔌</span>
+        <div>
+          <h1>Docking Station</h1>
+          <p>Manage and track all docking stations assigned across locations.</p>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-tile type-docking_station"><strong id="stat-total">0</strong><span>Total Docking Station</span></div>
+        <div class="stat-tile type-docking_station"><strong id="stat-available">0</strong><span>Available</span></div>
+        <div class="stat-tile type-docking_station"><strong id="stat-assigned">0</strong><span>Assigned</span></div>
+        <div class="stat-tile type-docking_station"><strong id="stat-maintenance">0</strong><span>Under Maintenance</span></div>
+      </div>
+
+      <div class="toolbar">
+        <label class="search-bar">
+          <input id="accessory-search" type="search" placeholder="Search by device name, service tag, ship tag or username..." />
+          <button type="button" aria-label="Search">⌕</button>
+        </label>
+        <button class="toolbar-add-btn admin-only" type="button" id="add-accessory-btn">+ Add Accessory</button>
+      </div>
+
+      <div class="data-table-wrap">
+        <table class="data-table" id="accessory-table">
+          <thead>
+            <tr><th>Device Name</th><th>Service Tag</th><th>Ship Tag</th><th>Ship Date</th><th>Expiry Date</th><th>Username</th><th>Status</th><th class="admin-only"></th></tr>
+          </thead>
+          <tbody id="accessory-rows"></tbody>
+        </table>
+        <div id="table-empty" class="table-empty">
+          <div class="empty-icon">📦</div>
+          <h3>No docking station found</h3>
+          <p>Try adjusting your search to find what you're looking for.</p>
+        </div>
+      </div>
+
+      <div class="table-footer">
+        <span id="showing-text">Showing 0 to 0 of 0 items</span>
+        <div class="pagination">
+          <button type="button" data-page="first">«</button>
+          <button type="button" data-page="prev">‹</button>
+          <button type="button" class="active">1</button>
+          <button type="button" data-page="next">›</button>
+          <button type="button" data-page="last">»</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <footer class="dashboard-footer"><span>&copy; 2025 Inventory Portal. All rights reserved. &middot; Created by Zainab Rizvi</span><span>◈ &nbsp; Secure &bull; Reliable &bull; Efficient Inventory Management</span><span>v2.5.0 &nbsp;&nbsp; | &nbsp;&nbsp; ⓘ Help</span></footer>
+
+  <div class="modal" id="accessory-modal" hidden>
+    <div class="modal-backdrop" data-close-accessory-modal></div>
+    <section class="modal-card wide" role="dialog" aria-modal="true" aria-labelledby="accessory-modal-title">
+      <button class="modal-close" type="button" data-close-accessory-modal aria-label="Close">×</button>
+      <h2 id="accessory-modal-title">Add Accessory</h2>
+      <form id="accessory-form">
+        <input type="hidden" id="acc-edit-id" />
+        <div class="modal-grid">
+          <label>Device Name<input id="acc-device-name" required /></label>
+          <label>Device Type
+            <select id="acc-device-type" required>
+              <option value="laptop">Laptop</option>
+              <option value="lcd">LCD</option>
+              <option value="keyboard_mouse">Keyboard / Mouse</option>
+              <option value="docking_station">Docking Station</option>
+              <option value="printer">Printer</option>
+              <option value="network_printer">Network Printer</option>
+            </select>
+          </label>
+          <label>Service Tag<input id="acc-service-tag" /></label>
+          <label>Ship Tag<input id="acc-ship-tag" /></label>
+          <label>Ship Date<input id="acc-ship-date" type="date" /></label>
+          <label>Expiry Date<input id="acc-expiry-date" type="date" /></label>
+          <label>Username<input id="acc-username" /></label>
+          <label>Status
+            <select id="acc-status">
+              <option value="available">Available</option>
+              <option value="assigned">Assigned</option>
+              <option value="maintenance">Maintenance</option>
+              <option value="retired">Retired</option>
+            </select>
+          </label>
+          <label>Location
+            <select id="acc-location" required>
+              <option value="islamabad">Islamabad</option>
+              <option value="karachi">Karachi</option>
+            </select>
+          </label>
+        </div>
+        <p id="accessory-form-error" class="modal-error" aria-live="polite"></p>
+        <button class="modal-submit" type="submit" id="accessory-submit-btn">Add Accessory</button>
+      </form>
+    </section>
+  </div>
+
+  <script src="js/portal.js"></script>
+  <script src="js/accessory-detail.js"></script>
+  <script>
+    const userName = Portal.getUserName();
+    const nameElement = document.getElementById('user-name');
+    const avatarElement = document.getElementById('user-avatar');
+    if (userName) { nameElement.textContent = userName; avatarElement.textContent = userName.charAt(0).toUpperCase(); }
+    const profileButton = document.getElementById('profile-menu-button');
+    const profileMenu = document.getElementById('profile-menu');
+    profileButton.addEventListener('click', () => { const open = profileMenu.classList.toggle('show'); profileButton.setAttribute('aria-expanded', open); });
+    document.getElementById('logout-link').addEventListener('click', () => sessionStorage.clear());
+  </script>
+</body>
+</html>

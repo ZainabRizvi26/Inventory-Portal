@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome | Inventory Portal</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html">
+      <img class="logo-mark" src="images/rohde-schwarz-logo.jpg" alt="Rohde & Schwarz" />
+      <span class="brand-copy">
+        <span class="brand-product">Inventory Portal</span>
+      </span>
+    </a>
+  </header>
+
+  <main class="page">
+    <div class="watermarks" aria-hidden="true">
+      <svg class="watermark left" viewBox="0 0 280 220">
+        <path d="M40 180 L140 40 L240 180 Z" fill="none" stroke="currentColor" stroke-width="3"/>
+        <path d="M70 180 V110 H210 V180" fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="140" cy="88" r="18" fill="none" stroke="currentColor" stroke-width="2"/>
+        <path d="M20 200 H260" stroke="currentColor" stroke-width="2"/>
+      </svg>
+      <svg class="watermark right" viewBox="0 0 240 280">
+        <path d="M40 240 V90 L120 30 L200 90 V240" fill="none" stroke="currentColor" stroke-width="3"/>
+        <path d="M70 240 V130 H170 V240" fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="120" cy="100" r="16" fill="none" stroke="currentColor" stroke-width="2"/>
+      </svg>
+    </div>
+
+    <section class="card">
+      <h1>Welcome</h1>
+      <p class="subtitle">Select your preferred location to continue.</p>
+      <div class="choice-list">
+        <button class="choice" type="button" id="choose-islamabad">
+          <span class="choice-icon outline">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8 40h32"/>
+              <path d="M10 40 V26 L24 10 L38 26 V40"/>
+              <path d="M24 10 V6"/>
+              <circle cx="24" cy="18" r="3"/>
+              <path d="M18 40 V30 h12 v10"/>
+            </svg>
+          </span>
+          <span class="choice-copy">
+            <strong>Islamabad</strong>
+            <span>Islamabad Office</span>
+          </span>
+          <span class="chevron">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg>
+          </span>
+        </button>
+        <button class="choice" type="button" id="choose-karachi">
+          <span class="choice-icon outline">
+            <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8 40h32"/>
+              <path d="M12 40 V22 L24 12 L36 22 V40"/>
+              <path d="M20 40 V28 h8 v12"/>
+              <circle cx="24" cy="20" r="3"/>
+            </svg>
+          </span>
+          <span class="choice-copy">
+            <strong>Karachi</strong>
+            <span>Karachi Office</span>
+          </span>
+          <span class="chevron">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 6 6 6-6 6"/></svg>
+          </span>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">© 2025 Inventory Portal. All rights reserved.</footer>
+  <script src="js/portal.js"></script>
+  <script>
+    document.getElementById("choose-islamabad").onclick = function () {
+      Portal.setLocation("islamabad");
+      location.href = "portal.html";
+    };
+    document.getElementById("choose-karachi").onclick = function () {
+      Portal.setLocation("karachi");
+      location.href = "portal.html";
+    };
+  </script>
+</body>
+</html>

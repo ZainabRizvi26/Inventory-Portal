@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Users | Inventory Portal</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body class="dashboard-body">
+  <header class="dashboard-nav">
+    <a class="dashboard-brand" href="dashboard.html"><img src="images/rohde-schwarz-logo.jpg" alt="Rohde & Schwarz" /><span>Inventory Portal</span></a>
+    <nav class="dashboard-links">
+      <a href="dashboard.html"><span>🏠</span> Dashboard</a>
+      <a href="accessory.html"><span>💻</span> IT Accessory</a>
+      <a href="port-mapping.html"><span>🌐</span> Port Mapping</a>
+      <a href="data-centre.html"><span>🏢</span> Data Centre</a>
+    </nav>
+    <div class="dashboard-user">
+      <button id="profile-menu-button" class="profile-menu-button" aria-expanded="false"><span id="user-avatar" class="avatar">A</span><span class="role-icon" title="Admin">👑</span><span id="user-name">Admin User</span><span>⌄</span></button>
+      <div id="profile-menu" class="profile-menu"><a href="profile.html">⚙ &nbsp; Profile Settings</a><a href="#" id="change-password-link">⚿ &nbsp; Change Password</a><a href="index.html" id="logout-link">↪ &nbsp; Logout</a></div>
+    </div>
+  </header>
+
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+            <nav class="sidebar-links">
+        <a href="dashboard.html"><span>🏠</span> Dashboard</a>
+      </nav>
+<div class="sidebar-group">
+        <button class="sidebar-group-toggle" type="button"><span>💻</span> IT Accessory <b class="chev">⌃</b></button>
+        <div class="sidebar-sub">
+          <a href="laptop.html">Laptop</a>
+          <a href="lcd.html">LCD</a>
+          <a href="keyboard-mouse.html">Keyboard / Mouse</a>
+          <a href="docking-station.html">Docking Station</a>
+          <a href="printer.html">Printer</a>
+          <a href="network-printer.html">Network Printer</a>
+        </div>
+      </div>
+      <nav class="sidebar-links">
+        <a href="port-mapping.html"><span>🌐</span> Port Mapping</a>
+      </nav>
+<div class="sidebar-group">
+        <button class="sidebar-group-toggle" type="button"><span>🏢</span> Data Centre <b class="chev">⌃</b></button>
+        <div class="sidebar-sub">
+          <a href="cctv-camera.html">CCTV Camera</a>
+          <a href="server.html">Server</a>
+          <a href="switches.html">Switches</a>
+          <a href="ups.html">UPS</a>
+          <a href="ac.html">AC</a>
+          <a href="access-control.html">Access Control System</a>
+        </div>
+      </div>
+      <nav class="sidebar-links">
+        <a class="active" href="users.html"><span>👤</span> Users</a>
+        <a href="#"><span>⚙</span> Settings</a>
+      </nav>
+        </aside>
+
+    <main class="admin-main">
+      <div id="access-denied" class="access-denied" hidden>
+        <div class="empty-icon">🔒</div>
+        <h3>Admin access required</h3>
+        <p>You don't have permission to view this page.</p>
+        <a class="btn-link" href="dashboard.html">Back to Dashboard</a>
+      </div>
+
+      <div id="users-content">
+        <p class="breadcrumb"><a href="dashboard.html">Home</a> <span>›</span> Users</p>
+        <div class="page-head">
+          <div>
+            <h1>Users</h1>
+            <p>See everyone with an account and who's active right now.</p>
+          </div>
+        </div>
+
+        <div class="stat-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));">
+          <div class="stat-tile" style="border-left-color:#1457a5;"><strong id="stat-total-users">0</strong><span>Total Users</span></div>
+          <div class="stat-tile" style="border-left-color:#25b566;"><strong id="stat-active-users">0</strong><span>Active Now</span></div>
+          <div class="stat-tile" style="border-left-color:#7a4fd1;"><strong id="stat-admin-users">0</strong><span>Admins</span></div>
+        </div>
+
+        <div class="toolbar">
+          <label class="search-bar">
+            <input id="user-search" type="search" placeholder="Search by name or email..." />
+            <button type="button" aria-label="Search">⌕</button>
+          </label>
+        </div>
+
+        <div class="data-table-wrap">
+          <table class="data-table" id="users-table">
+            <thead>
+              <tr><th>Name</th><th>Email</th><th>Role</th><th>Location</th><th>Status</th><th>Last Seen</th></tr>
+            </thead>
+            <tbody id="users-rows"></tbody>
+          </table>
+          <div id="table-empty" class="table-empty">
+            <div class="empty-icon">👤</div>
+            <h3>No users found</h3>
+            <p>Try adjusting your search to find what you're looking for.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <footer class="dashboard-footer"><span>&copy; 2025 Inventory Portal. All rights reserved. &middot; Created by Zainab Rizvi</span><span>◈ &nbsp; Secure &bull; Reliable &bull; Efficient Inventory Management</span><span>v2.5.0 &nbsp;&nbsp; | &nbsp;&nbsp; ⓘ Help</span></footer>
+
+  <script src="js/portal.js"></script>
+  <script src="js/users.js"></script>
+  <script>
+    const userName = Portal.getUserName();
+    const nameElement = document.getElementById('user-name');
+    const avatarElement = document.getElementById('user-avatar');
+    if (userName) { nameElement.textContent = userName; avatarElement.textContent = userName.charAt(0).toUpperCase(); }
+    const profileButton = document.getElementById('profile-menu-button');
+    const profileMenu = document.getElementById('profile-menu');
+    profileButton.addEventListener('click', () => { const open = profileMenu.classList.toggle('show'); profileButton.setAttribute('aria-expanded', open); });
+    document.getElementById('logout-link').addEventListener('click', () => sessionStorage.clear());
+    document.querySelectorAll('.sidebar-group-toggle').forEach((toggle) => {
+      toggle.addEventListener('click', (event) => {
+        event.currentTarget.closest('.sidebar-group').classList.toggle('open');
+      });
+    });
+  </script>
+</body>
+</html>

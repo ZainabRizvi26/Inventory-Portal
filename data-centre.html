@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Centre | Inventory Portal</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body class="dashboard-body">
+  <header class="dashboard-nav">
+    <a class="dashboard-brand" href="dashboard.html"><img src="images/rohde-schwarz-logo.jpg" alt="Rohde & Schwarz" /><span>Inventory Portal</span></a>
+    <nav class="dashboard-links">
+      <a href="dashboard.html"><span>🏠</span> Dashboard</a>
+      <a href="accessory.html"><span>💻</span> IT Accessory</a>
+      <a href="port-mapping.html"><span>🌐</span> Port Mapping</a>
+      <a class="active" href="data-centre.html"><span>🏢</span> Data Centre</a>
+    </nav>
+    <div class="dashboard-user">
+      <button id="profile-menu-button" class="profile-menu-button" aria-expanded="false"><span id="user-avatar" class="avatar">A</span><span class="role-icon" title="Admin">👑</span><span id="user-name">Admin User</span><span>⌄</span></button>
+      <div id="profile-menu" class="profile-menu"><a href="profile.html">⚙ &nbsp; Profile Settings</a><a href="#" id="change-password-link">⚿ &nbsp; Change Password</a><a href="index.html" id="logout-link">↪ &nbsp; Logout</a></div>
+    </div>
+  </header>
+
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+            <nav class="sidebar-links">
+        <a href="dashboard.html"><span>🏠</span> Dashboard</a>
+      </nav>
+<div class="sidebar-group">
+        <button class="sidebar-group-toggle" type="button"><span>💻</span> IT Accessory <b class="chev">⌃</b></button>
+        <div class="sidebar-sub">
+          <a href="laptop.html">Laptop</a>
+          <a href="lcd.html">LCD</a>
+          <a href="keyboard-mouse.html">Keyboard / Mouse</a>
+          <a href="docking-station.html">Docking Station</a>
+          <a href="printer.html">Printer</a>
+          <a href="network-printer.html">Network Printer</a>
+        </div>
+      </div>
+      <nav class="sidebar-links">
+        <a href="port-mapping.html"><span>🌐</span> Port Mapping</a>
+      </nav>
+<div class="sidebar-group open">
+        <button class="sidebar-group-toggle" type="button"><span>🏢</span> Data Centre <b class="chev">⌃</b></button>
+        <div class="sidebar-sub">
+          <a href="cctv-camera.html">CCTV Camera</a>
+          <a href="server.html">Server</a>
+          <a href="switches.html">Switches</a>
+          <a href="ups.html">UPS</a>
+          <a href="ac.html">AC</a>
+          <a href="access-control.html">Access Control System</a>
+        </div>
+      </div>
+      <nav class="sidebar-links">
+        <a href="users.html" class="admin-only"><span>👤</span> Users</a>
+        <a href="#"><span>⚙</span> Settings</a>
+      </nav>
+        </aside>
+
+    <main class="admin-main">
+      <p class="breadcrumb"><a href="dashboard.html">Home</a> <span>›</span> Data Centre</p>
+      <div class="page-head">
+        <div>
+          <h1>Data Centre</h1>
+          <p>Search and view data centre assets — CCTV cameras, servers, switches, UPS, AC and access control systems.</p>
+        </div>
+        <div class="summary-card">
+          <span class="summary-icon">🏢</span>
+          <div>
+            <strong id="total-dc-assets">0</strong>
+            <span>Total Assets</span>
+            <small>Across All Locations</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <label class="search-bar">
+          <input id="dc-search" type="search" placeholder="Search by asset name, service tag, IP address or rack/room..." />
+          <button type="button" aria-label="Search">⌕</button>
+        </label>
+        <button class="filter-btn" type="button" id="filter-toggle" aria-expanded="false">▽ Filter <span id="filter-count" class="filter-count" hidden>0</span></button>
+        <button class="toolbar-add-btn purple admin-only" type="button" id="add-dc-btn">+ Add Asset</button>
+      </div>
+
+      <div class="filter-panel" id="filter-panel" hidden>
+        <div class="filter-field">
+          <label for="filter-type">Asset Type</label>
+          <select id="filter-type">
+            <option value="">All Types</option>
+            <option value="cctv_camera">CCTV Camera</option>
+            <option value="server">Server</option>
+            <option value="switch">Switches</option>
+            <option value="ups">UPS</option>
+            <option value="ac">AC</option>
+            <option value="access_control">Access Control System</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label for="filter-location">Location</label>
+          <select id="filter-location">
+            <option value="">All Locations</option>
+            <option value="islamabad">Islamabad</option>
+            <option value="karachi">Karachi</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label for="filter-status">Status</label>
+          <select id="filter-status">
+            <option value="">All Statuses</option>
+            <option value="active">Active</option>
+            <option value="maintenance">Maintenance</option>
+            <option value="retired">Retired</option>
+          </select>
+        </div>
+        <button class="filter-clear" type="button" id="clear-filter">Clear filters</button>
+      </div>
+
+      <div class="data-table-wrap">
+        <table class="data-table" id="dc-table">
+          <thead>
+            <tr><th>Asset Name</th><th>Asset Type</th><th>Service Tag</th><th>IP Address</th><th>Rack / Room</th><th>Status</th><th class="admin-only"></th></tr>
+          </thead>
+          <tbody id="dc-rows"></tbody>
+        </table>
+        <div id="table-empty" class="table-empty">
+          <div class="empty-icon">🏢</div>
+          <h3>No data centre assets found</h3>
+          <p>Try adjusting your search or filter to find what you're looking for.</p>
+        </div>
+      </div>
+
+      <div class="table-footer">
+        <span id="showing-text">Showing 0 to 0 of 0 items</span>
+        <div class="pagination">
+          <button type="button" data-page="first">«</button>
+          <button type="button" data-page="prev">‹</button>
+          <button type="button" class="active">1</button>
+          <button type="button" data-page="next">›</button>
+          <button type="button" data-page="last">»</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <footer class="dashboard-footer"><span>&copy; 2025 Inventory Portal. All rights reserved. &middot; Created by Zainab Rizvi</span><span>◈ &nbsp; Secure &bull; Reliable &bull; Efficient Inventory Management</span><span>v2.5.0 &nbsp;&nbsp; | &nbsp;&nbsp; ⓘ Help</span></footer>
+
+  <div class="modal" id="dc-modal" hidden>
+    <div class="modal-backdrop" data-close-dc-modal></div>
+    <section class="modal-card wide" role="dialog" aria-modal="true" aria-labelledby="dc-modal-title">
+      <button class="modal-close" type="button" data-close-dc-modal aria-label="Close">×</button>
+      <h2 id="dc-modal-title">Add Asset</h2>
+      <form id="dc-form">
+        <input type="hidden" id="dc-edit-id" />
+        <div class="modal-grid">
+          <label>Asset Name<input id="dc-asset-name" required /></label>
+          <label>Asset Type
+            <select id="dc-asset-type" required>
+              <option value="cctv_camera">CCTV Camera</option>
+              <option value="server">Server</option>
+              <option value="switch">Switches</option>
+              <option value="ups">UPS</option>
+              <option value="ac">AC</option>
+              <option value="access_control">Access Control System</option>
+            </select>
+          </label>
+          <label>Service Tag<input id="dc-service-tag" /></label>
+          <label>IP Address<input id="dc-ip-address" /></label>
+          <label>Rack / Room<input id="dc-rack-location" /></label>
+          <label>Install Date<input id="dc-install-date" type="date" /></label>
+          <label>Warranty Expiry<input id="dc-warranty-expiry" type="date" /></label>
+          <label>Status
+            <select id="dc-status">
+              <option value="active">Active</option>
+              <option value="maintenance">Maintenance</option>
+              <option value="retired">Retired</option>
+            </select>
+          </label>
+          <label>Location
+            <select id="dc-location" required>
+              <option value="islamabad">Islamabad</option>
+              <option value="karachi">Karachi</option>
+            </select>
+          </label>
+        </div>
+        <p id="dc-form-error" class="modal-error" aria-live="polite"></p>
+        <button class="modal-submit" type="submit" id="dc-submit-btn">Add Asset</button>
+      </form>
+    </section>
+  </div>
+
+  <script src="js/portal.js"></script>
+  <script src="js/data-centre.js"></script>
+  <script>
+    const userName = Portal.getUserName();
+    const nameElement = document.getElementById('user-name');
+    const avatarElement = document.getElementById('user-avatar');
+    if (userName) { nameElement.textContent = userName; avatarElement.textContent = userName.charAt(0).toUpperCase(); }
+    const profileButton = document.getElementById('profile-menu-button');
+    const profileMenu = document.getElementById('profile-menu');
+    profileButton.addEventListener('click', () => { const open = profileMenu.classList.toggle('show'); profileButton.setAttribute('aria-expanded', open); });
+    document.getElementById('logout-link').addEventListener('click', () => sessionStorage.clear());
+  </script>
+</body>
+</html>
