@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#04255c" />
+  <link rel="icon" type="image/png" href="/images/favicon.png" />
   <title>Access Control System | Inventory Portal</title>
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -11,15 +14,16 @@
 </head>
 <body class="dashboard-body">
   <header class="dashboard-nav">
-    <a class="dashboard-brand" href="dashboard.html"><img src="images/rohde-schwarz-logo.jpg" alt="Rohde & Schwarz" /><span>Inventory Portal</span></a>
+    <a class="dashboard-brand" href="dashboard.html"><img src="images/rs-diamond-card.png" alt="Rohde & Schwarz" /><span>Inventory Portal</span></a>
     <nav class="dashboard-links">
       <a href="dashboard.html"><span>🏠</span> Dashboard</a>
       <a href="accessory.html"><span>💻</span> IT Accessory</a>
       <a href="port-mapping.html"><span>🌐</span> Port Mapping</a>
       <a class="active" href="data-centre.html"><span>🏢</span> Data Centre</a>
+      <a href="users.html" class="admin-only"><span>👤</span> Users</a>
     </nav>
     <div class="dashboard-user">
-      <button id="profile-menu-button" class="profile-menu-button" aria-expanded="false"><span id="user-avatar" class="avatar">A</span><span class="role-icon" title="Admin">👑</span><span id="user-name">Admin User</span><span>⌄</span></button>
+      <button id="profile-menu-button" class="profile-menu-button" aria-expanded="false"><span id="user-avatar" class="avatar">A</span><span class="role-icon" title="Admin">👑</span><span id="user-name">Admin User</span><span><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></button>
       <div id="profile-menu" class="profile-menu"><a href="profile.html">⚙ &nbsp; Profile Settings</a><a href="#" id="change-password-link">⚿ &nbsp; Change Password</a><a href="index.html" id="logout-link">↪ &nbsp; Logout</a></div>
     </div>
   </header>
@@ -30,7 +34,7 @@
         <a href="dashboard.html"><span>🏠</span> Dashboard</a>
       </nav>
 <div class="sidebar-group">
-        <button class="sidebar-group-toggle" type="button"><span>💻</span> IT Accessory <b class="chev">⌃</b></button>
+        <div class="sidebar-group-toggle"><a href="accessory.html" class="sidebar-group-link"><span>💻</span> IT Accessory</a><button type="button" class="chev-btn" aria-label="Toggle IT Accessory menu"><b class="chev"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></b></button></div>
         <div class="sidebar-sub">
           <a href="laptop.html">Laptop</a>
           <a href="lcd.html">LCD</a>
@@ -44,7 +48,7 @@
         <a href="port-mapping.html"><span>🌐</span> Port Mapping</a>
       </nav>
 <div class="sidebar-group open">
-        <button class="sidebar-group-toggle" type="button"><span>🏢</span> Data Centre <b class="chev">⌃</b></button>
+        <div class="sidebar-group-toggle"><a href="data-centre.html" class="sidebar-group-link"><span>🏢</span> Data Centre</a><button type="button" class="chev-btn" aria-label="Toggle Data Centre menu"><b class="chev"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></b></button></div>
         <div class="sidebar-sub">
           <a href="cctv-camera.html">CCTV Camera</a>
           <a href="server.html">Server</a>

@@ -1,3 +1,9 @@
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js").catch(() => {});
+  });
+}
+
 (function () {
   const KEYS = {
     location: "inventoryPortal.location",
@@ -7,6 +13,8 @@
     userPhoto: "inventoryPortal.userPhoto",
     role: "inventoryPortal.role",
     token: "inventoryPortal.token",
+    userId: "inventoryPortal.userId",
+    superAdmin: "inventoryPortal.isSuperAdmin",
   };
 
   function showError(message) {
@@ -67,10 +75,29 @@
     getToken() {
       return read(KEYS.token);
     },
+    setUserId(id) {
+      save(KEYS.userId, id);
+    },
+    getUserId() {
+      return read(KEYS.userId);
+    },
+    setSuperAdmin(value) {
+      save(KEYS.superAdmin, value ? "1" : "0");
+    },
+    isSuperAdmin() {
+      return read(KEYS.superAdmin) === "1";
+    },
   };
 
   document.querySelectorAll(".admin-only").forEach((el) => {
     if (!Portal.isAdmin()) {
+      el.hidden = true;
+      el.style.setProperty("display", "none", "important");
+    }
+  });
+
+  document.querySelectorAll(".superadmin-only").forEach((el) => {
+    if (!Portal.isSuperAdmin()) {
       el.hidden = true;
       el.style.setProperty("display", "none", "important");
     }
@@ -164,6 +191,8 @@
         sessionStorage.setItem("inventoryPortal.token", data.token);
         Portal.setUser(data.user.fullName);
         Portal.setRole(data.user.role);
+        Portal.setUserId(data.user.id);
+        Portal.setSuperAdmin(data.user.isSuperAdmin);
         window.location.href = data.user.role === "admin" ? "dashboard-admin.html" : "dashboard.html";
       } catch {
         showError("Unable to reach the server. Please try again.");
@@ -236,6 +265,11 @@
       showError("Passwords do not match.");
       return null;
     }
+    const activeRole = document.querySelector("[data-role-toggle] button.active")?.getAttribute("data-role");
+    if (activeRole === "admin" && !document.getElementById("admin-code").value.trim()) {
+      showError("Please enter the admin code.");
+      return null;
+    }
     return { fullName: document.getElementById("full-name").value.trim() };
   }
 
@@ -244,6 +278,17 @@
     const locationSelect = document.getElementById("location");
     const saved = Portal.getLocation();
     if (saved && locationSelect) locationSelect.value = saved;
+
+    const adminCodeField = document.getElementById("admin-code-field");
+    let signupRole = "user";
+    document.querySelectorAll("[data-role-toggle] button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("[data-role-toggle] button").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        signupRole = btn.getAttribute("data-role");
+        if (adminCodeField) adminCodeField.hidden = signupRole !== "admin";
+      });
+    });
 
     const photoInput = document.getElementById("photo");
     const preview = document.getElementById("photo-preview");
@@ -282,7 +327,11 @@
           dob: document.getElementById("dob").value,
           location: document.getElementById("location").value,
           password: document.getElementById("password").value,
+          role: signupRole,
         };
+        if (signupRole === "admin") {
+          body.adminCode = document.getElementById("admin-code").value.trim();
+        }
         const res = await fetch("/api/auth/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -296,6 +345,8 @@
         sessionStorage.setItem("inventoryPortal.token", data.token);
         Portal.setUser(values.fullName, uploadedPhoto);
         Portal.setRole(data.user.role);
+        Portal.setUserId(data.user.id);
+        Portal.setSuperAdmin(data.user.isSuperAdmin);
         window.location.href = "account-created.html";
       } catch {
         showError("Unable to reach the server. Please try again.");

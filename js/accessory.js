@@ -14,6 +14,7 @@
   const filterType = document.getElementById("filter-type");
   const filterLocation = document.getElementById("filter-location");
   const filterStatus = document.getElementById("filter-status");
+  const filterUsername = document.getElementById("filter-username");
 
   if (!table) return;
 
@@ -61,10 +62,9 @@
         <td>${escapeHtml(item.deviceName)}</td>
         <td>${escapeHtml(TYPE_LABELS[item.deviceType] || item.deviceType)}</td>
         <td>${escapeHtml(item.serviceTag) || "—"}</td>
-        <td>${escapeHtml(item.shipTag) || "—"}</td>
         <td>${formatDate(item.shipDate)}</td>
         <td>${formatDate(item.expiryDate)}</td>
-        <td>${escapeHtml(item.username) || "—"}</td>
+        <td>${escapeHtml(item.username || item.customAccMainU) || "—"}</td>
         <td>${statusBadge(item.status)}</td>
         ${isAdmin ? `<td><button class="row-edit" type="button" data-edit-id="${item._id}" aria-label="Edit">✎</button><button class="row-delete" type="button" data-id="${item._id}" aria-label="Delete">🗑</button></td>` : ""}
       </tr>`
@@ -91,7 +91,7 @@
   }
 
   function updateFilterCount() {
-    const active = [filterType.value, filterLocation.value, filterStatus.value].filter(Boolean).length;
+    const active = [filterType.value, filterLocation.value, filterStatus.value, filterUsername.value].filter(Boolean).length;
     filterCount.textContent = String(active);
     filterCount.hidden = active === 0;
   }
@@ -103,6 +103,7 @@
     if (filterType.value) params.set("type", filterType.value);
     if (filterLocation.value) params.set("location", filterLocation.value);
     if (filterStatus.value) params.set("status", filterStatus.value);
+    if (filterUsername.value.trim()) params.set("username", filterUsername.value.trim());
     updateFilterCount();
     try {
       const res = await fetch("/api/accessories?" + params.toString());
@@ -131,11 +132,18 @@
     select.addEventListener("change", load);
   });
 
+  let usernameDebounce;
+  filterUsername.addEventListener("input", () => {
+    clearTimeout(usernameDebounce);
+    usernameDebounce = setTimeout(load, 250);
+  });
+
   clearFilterBtn.addEventListener("click", () => {
     searchInput.value = "";
     filterType.value = "";
     filterLocation.value = "";
     filterStatus.value = "";
+    filterUsername.value = "";
     load();
   });
 
@@ -144,7 +152,7 @@
   document.querySelector('[data-page="next"]')?.addEventListener("click", () => { currentPage++; render(); });
   document.querySelector('[data-page="last"]')?.addEventListener("click", () => { currentPage = Math.max(1, Math.ceil(allItems.length / PAGE_SIZE)); render(); });
 
-  document.querySelectorAll(".sidebar-group-toggle").forEach((toggle) => {
+  document.querySelectorAll(".chev-btn").forEach((toggle) => {
     toggle.addEventListener("click", (event) => {
       event.currentTarget.closest(".sidebar-group").classList.toggle("open");
     });
@@ -262,5 +270,6 @@
     });
   }
 
+  if (Portal.getLocation()) filterLocation.value = Portal.getLocation();
   load();
 })();

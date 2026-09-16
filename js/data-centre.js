@@ -12,6 +12,7 @@
   const filterType = document.getElementById("filter-type");
   const filterLocation = document.getElementById("filter-location");
   const filterStatus = document.getElementById("filter-status");
+  const filterName = document.getElementById("filter-name");
 
   if (!table) return;
 
@@ -86,7 +87,7 @@
   }
 
   function updateFilterCount() {
-    const active = [filterType.value, filterLocation.value, filterStatus.value].filter(Boolean).length;
+    const active = [filterType.value, filterLocation.value, filterStatus.value, filterName.value].filter(Boolean).length;
     filterCount.textContent = String(active);
     filterCount.hidden = active === 0;
   }
@@ -98,6 +99,7 @@
     if (filterType.value) params.set("type", filterType.value);
     if (filterLocation.value) params.set("location", filterLocation.value);
     if (filterStatus.value) params.set("status", filterStatus.value);
+    if (filterName.value.trim()) params.set("name", filterName.value.trim());
     updateFilterCount();
     try {
       const res = await fetch("/api/data-centre-assets?" + params.toString());
@@ -126,11 +128,18 @@
     select.addEventListener("change", load);
   });
 
+  let nameDebounce;
+  filterName.addEventListener("input", () => {
+    clearTimeout(nameDebounce);
+    nameDebounce = setTimeout(load, 250);
+  });
+
   clearFilterBtn.addEventListener("click", () => {
     searchInput.value = "";
     filterType.value = "";
     filterLocation.value = "";
     filterStatus.value = "";
+    filterName.value = "";
     load();
   });
 
@@ -139,7 +148,7 @@
   document.querySelector('[data-page="next"]')?.addEventListener("click", () => { currentPage++; render(); });
   document.querySelector('[data-page="last"]')?.addEventListener("click", () => { currentPage = Math.max(1, Math.ceil(allItems.length / PAGE_SIZE)); render(); });
 
-  document.querySelectorAll(".sidebar-group-toggle").forEach((toggle) => {
+  document.querySelectorAll(".chev-btn").forEach((toggle) => {
     toggle.addEventListener("click", (event) => {
       event.currentTarget.closest(".sidebar-group").classList.toggle("open");
     });
@@ -257,5 +266,6 @@
     });
   }
 
+  if (Portal.getLocation()) filterLocation.value = Portal.getLocation();
   load();
 })();

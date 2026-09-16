@@ -4,15 +4,21 @@ const { requireAuth, requireAdmin } = require('../middleware/auth');
 
 router.get('/', async (req, res) => {
   try {
-    const { q, type, location, status } = req.query;
+    const { q, type, location, status, username } = req.query;
     const filter = {};
     if (type) filter.deviceType = type;
     if (location) filter.location = location;
     if (status) filter.status = status;
+    const andConditions = [];
+    if (username) {
+      const userRegex = new RegExp(String(username).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+      andConditions.push({ $or: [{ username: userRegex }, { customAccMainU: userRegex }, { displayName: userRegex }] });
+    }
     if (q) {
       const regex = new RegExp(String(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
-      filter.$or = [{ deviceName: regex }, { displayName: regex }, { serviceTag: regex }, { shipTag: regex }, { username: regex }, { customAccMainU: regex }];
+      andConditions.push({ $or: [{ deviceName: regex }, { displayName: regex }, { serviceTag: regex }, { shipTag: regex }, { username: regex }, { customAccMainU: regex }] });
     }
+    if (andConditions.length) filter.$and = andConditions;
     const items = await Accessory.find(filter).sort({ srfNo: 1, createdAt: -1 }).lean();
     res.json({ items, total: items.length });
   } catch {

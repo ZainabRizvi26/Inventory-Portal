@@ -13,7 +13,7 @@
   const statAssigned = document.getElementById("stat-assigned");
   const statMaintenance = document.getElementById("stat-maintenance");
 
-  const isSheetLayout = !!document.getElementById("acc-srf-no");
+  const layout = main.dataset.layout || "standard";
 
   const PAGE_SIZE = 10;
   let allItems = [];
@@ -50,7 +50,7 @@
     const actionsCell = isAdmin
       ? `<td><button class="row-edit" type="button" data-edit-id="${item._id}" aria-label="Edit">✎</button><button class="row-delete" type="button" data-id="${item._id}" aria-label="Delete">🗑</button></td>`
       : "";
-    if (isSheetLayout) {
+    if (layout === "laptop-sheet") {
       return `
       <tr>
         <td>${escapeHtml(item.srfNo ?? "")}</td>
@@ -59,6 +59,28 @@
         <td>${escapeHtml(item.serviceTag) || "—"}</td>
         <td>${formatDate(item.shipDate)}</td>
         <td>${formatDate(item.expiryDate)}</td>
+        <td>${escapeHtml(item.customAccMainU) || "—"}</td>
+        ${actionsCell}
+      </tr>`;
+    }
+    if (layout === "lcd-sheet") {
+      return `
+      <tr>
+        <td>${escapeHtml(item.srfNo ?? "")}</td>
+        <td>${escapeHtml(item.deviceName)}</td>
+        <td>${escapeHtml(item.serviceTag) || "—"}</td>
+        <td>${statusBadge(item.status)}</td>
+        <td>${escapeHtml(item.username) || "—"}</td>
+        ${actionsCell}
+      </tr>`;
+    }
+    if (layout === "printer-sheet") {
+      return `
+      <tr>
+        <td>${escapeHtml(item.srfNo ?? "")}</td>
+        <td>${escapeHtml(item.username) || "—"}</td>
+        <td>${escapeHtml(item.deviceName) || "—"}</td>
+        <td>${formatDate(item.shipDate)}</td>
         <td>${escapeHtml(item.customAccMainU) || "—"}</td>
         ${actionsCell}
       </tr>`;
@@ -111,6 +133,7 @@
     const params = new URLSearchParams({ type });
     const q = searchInput.value.trim();
     if (q) params.set("q", q);
+    if (Portal.getLocation()) params.set("location", Portal.getLocation());
     try {
       const res = await fetch("/api/accessories?" + params.toString());
       const data = await res.json().catch(() => ({ items: [] }));
@@ -133,7 +156,7 @@
   document.querySelector('[data-page="next"]')?.addEventListener("click", () => { currentPage++; render(); });
   document.querySelector('[data-page="last"]')?.addEventListener("click", () => { currentPage = Math.max(1, Math.ceil(allItems.length / PAGE_SIZE)); render(); });
 
-  document.querySelectorAll(".sidebar-group-toggle").forEach((toggle) => {
+  document.querySelectorAll(".chev-btn").forEach((toggle) => {
     toggle.addEventListener("click", (event) => {
       event.currentTarget.closest(".sidebar-group").classList.toggle("open");
     });
@@ -179,10 +202,10 @@
         fields.deviceName.value = item.deviceName || "";
         if (fields.displayName) fields.displayName.value = item.displayName || "";
         fields.deviceType.value = item.deviceType || type;
-        fields.serviceTag.value = item.serviceTag || "";
+        if (fields.serviceTag) fields.serviceTag.value = item.serviceTag || "";
         if (fields.shipTag) fields.shipTag.value = item.shipTag || "";
-        fields.shipDate.value = toDateInput(item.shipDate);
-        fields.expiryDate.value = toDateInput(item.expiryDate);
+        if (fields.shipDate) fields.shipDate.value = toDateInput(item.shipDate);
+        if (fields.expiryDate) fields.expiryDate.value = toDateInput(item.expiryDate);
         if (fields.username) fields.username.value = item.username || "";
         if (fields.customAccMainU) fields.customAccMainU.value = item.customAccMainU || "";
         fields.status.value = item.status || "available";
@@ -192,7 +215,12 @@
         title.textContent = "Add Accessory";
         submitBtn.textContent = "Add Accessory";
         fields.deviceType.value = type;
+        if (fields.srfNo) {
+          const nextSrfNo = allItems.reduce((max, i) => Math.max(max, i.srfNo || 0), 0) + 1;
+          fields.srfNo.value = nextSrfNo;
+        }
       }
+      if (fields.srfNo) fields.srfNo.readOnly = true;
       modal.hidden = false;
     }
 
@@ -231,12 +259,12 @@
         const body = {
           deviceName: fields.deviceName.value.trim(),
           deviceType: fields.deviceType.value,
-          serviceTag: fields.serviceTag.value.trim(),
-          shipDate: fields.shipDate.value || null,
-          expiryDate: fields.expiryDate.value || null,
           status: fields.status.value,
           location: fields.location.value,
         };
+        if (fields.serviceTag) body.serviceTag = fields.serviceTag.value.trim();
+        if (fields.shipDate) body.shipDate = fields.shipDate.value || null;
+        if (fields.expiryDate) body.expiryDate = fields.expiryDate.value || null;
         if (fields.srfNo) body.srfNo = fields.srfNo.value ? Number(fields.srfNo.value) : null;
         if (fields.displayName) body.displayName = fields.displayName.value.trim();
         if (fields.shipTag) body.shipTag = fields.shipTag.value.trim();

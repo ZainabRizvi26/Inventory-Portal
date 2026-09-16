@@ -4,15 +4,21 @@ const { requireAuth, requireAdmin } = require('../middleware/auth');
 
 router.get('/', async (req, res) => {
   try {
-    const { q, type, location, status } = req.query;
+    const { q, type, location, status, name } = req.query;
     const filter = {};
     if (type) filter.assetType = type;
     if (location) filter.location = location;
     if (status) filter.status = status;
+    const andConditions = [];
+    if (name) {
+      const nameRegex = new RegExp(String(name).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+      andConditions.push({ assetName: nameRegex });
+    }
     if (q) {
       const regex = new RegExp(String(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
-      filter.$or = [{ assetName: regex }, { serviceTag: regex }, { ipAddress: regex }, { rackLocation: regex }];
+      andConditions.push({ $or: [{ assetName: regex }, { serviceTag: regex }, { ipAddress: regex }, { rackLocation: regex }] });
     }
+    if (andConditions.length) filter.$and = andConditions;
     const items = await DataCentreAsset.find(filter).sort({ createdAt: -1 }).lean();
     res.json({ items, total: items.length });
   } catch {

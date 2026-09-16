@@ -93,6 +93,7 @@
     const params = new URLSearchParams({ type });
     const q = searchInput.value.trim();
     if (q) params.set("q", q);
+    if (Portal.getLocation()) params.set("location", Portal.getLocation());
     try {
       const res = await fetch("/api/data-centre-assets?" + params.toString());
       const data = await res.json().catch(() => ({ items: [] }));
@@ -115,7 +116,7 @@
   document.querySelector('[data-page="next"]')?.addEventListener("click", () => { currentPage++; render(); });
   document.querySelector('[data-page="last"]')?.addEventListener("click", () => { currentPage = Math.max(1, Math.ceil(allItems.length / PAGE_SIZE)); render(); });
 
-  document.querySelectorAll(".sidebar-group-toggle").forEach((toggle) => {
+  document.querySelectorAll(".chev-btn").forEach((toggle) => {
     toggle.addEventListener("click", (event) => {
       event.currentTarget.closest(".sidebar-group").classList.toggle("open");
     });

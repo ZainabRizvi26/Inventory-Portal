@@ -2,12 +2,15 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#04255c" />
+  <link rel="icon" type="image/png" href="/images/favicon.png" />
   <title>Profile Settings | Inventory Portal</title><link rel="stylesheet" href="css/styles.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 </head>
 <body class="dashboard-body">
-  <header class="dashboard-nav"><a class="dashboard-brand" href="dashboard.html"><img src="images/rohde-schwarz-logo.jpg" alt="Rohde & Schwarz" /><span>Inventory Portal</span></a><nav class="dashboard-links"><a class="active" href="dashboard.html"><span>⌂</span> Home</a></nav></header>
+  <header class="dashboard-nav"><a class="dashboard-brand" href="dashboard.html"><img src="images/rs-diamond-card.png" alt="Rohde & Schwarz" /><span>Inventory Portal</span></a><nav class="dashboard-links"><a class="active" href="dashboard.html"><span>⌂</span> Home</a></nav></header>
   <main class="profile-page"><section class="profile-card"><a class="profile-back" href="dashboard.html">← Back to Home</a><h1>Profile Settings</h1><p>Update your account information and profile photo.</p><form id="profile-form"><label class="profile-photo"><input id="profile-photo-input" type="file" accept="image/png,image/jpeg" hidden><span id="profile-photo-preview" class="profile-photo-preview">A</span><span>Change profile photo</span></label><div class="profile-fields"><label>Full Name<input id="profile-name" required placeholder="Your full name"></label><label>Email Address<input id="profile-email" type="email" placeholder="Your email address"></label><label>New Password<input id="profile-password" type="password" placeholder="Leave blank to keep current password"></label></div><p id="profile-message" class="profile-message" aria-live="polite"></p><button class="profile-save" type="submit">Save Changes</button></form><a id="profile-logout" class="profile-logout" href="index.html">Logout</a></section></main>
   <script src="js/portal.js"></script><script>
     const nameInput=document.getElementById('profile-name'), emailInput=document.getElementById('profile-email'), preview=document.getElementById('profile-photo-preview');

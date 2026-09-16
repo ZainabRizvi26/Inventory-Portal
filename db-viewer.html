@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Database Viewer | Inventory Portal</title>
+<link rel="icon" type="image/png" href="/images/favicon.png" />
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; display: flex; min-height: 100vh; font-family: -apple-system, Segoe UI, Inter, sans-serif; background: #f3f6fa; color: #12233f; }
+  aside { width: 240px; flex-shrink: 0; background: #0a1247; color: #fff; padding: 18px 0; overflow-y: auto; }
+  aside h1 { margin: 0 18px 14px; font-size: 15px; font-weight: 800; letter-spacing: .5px; }
+  aside button { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 10px 18px; border: 0; background: transparent; color: #cfe0ff; text-align: left; font-size: 13px; cursor: pointer; }
+  aside button:hover { background: rgba(255,255,255,.08); }
+  aside button.active { background: rgba(255,255,255,.14); color: #fff; font-weight: 700; }
+  aside button span.count { font-size: 11px; color: #8fa8d6; background: rgba(255,255,255,.08); padding: 1px 7px; border-radius: 8px; }
+  main { flex: 1; padding: 22px 26px; overflow: auto; }
+  main h2 { margin: 0 0 4px; font-size: 20px; }
+  main p.sub { margin: 0 0 16px; color: #52658c; font-size: 13px; }
+  table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid #dde5ef; border-radius: 8px; overflow: hidden; font-size: 12px; }
+  th, td { padding: 8px 10px; border-bottom: 1px solid #eef2f7; text-align: left; vertical-align: top; white-space: pre-wrap; word-break: break-word; max-width: 320px; }
+  th { background: #eef3fa; font-weight: 700; position: sticky; top: 0; }
+  tr:hover td { background: #f8fafd; }
+  .empty { padding: 40px; text-align: center; color: #7c8aa5; }
+  .pager { display: flex; gap: 8px; align-items: center; margin-top: 14px; font-size: 13px; }
+  .pager[hidden] { display: none; }
+  .pager button { padding: 6px 12px; border: 1px solid #d5deeb; background: #fff; border-radius: 7px; cursor: pointer; }
+  .pager button:disabled { opacity: .4; cursor: default; }
+  code.id { color: #2b6cb0; }
+</style>
+</head>
+<body>
+  <aside>
+    <h1>⛁ DATABASE VIEWER</h1>
+    <div id="collection-list">Loading…</div>
+  </aside>
+  <main>
+    <h2 id="view-title">Select a collection</h2>
+    <p class="sub" id="view-sub"></p>
+    <div id="view-body"><div class="empty">Pick a collection on the left to see its documents.</div></div>
+    <div class="pager" id="pager" hidden>
+      <button id="prev-page">‹ Prev</button>
+      <span id="page-label"></span>
+      <button id="next-page">Next ›</button>
+    </div>
+  </main>
+  <script>
+    let currentCollection = null;
+    let currentPage = 1;
+    let totalDocs = 0;
+    const PAGE_SIZE = 50;
+
+    function escapeHtml(v) {
+      return String(v ?? '').replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+    }
+
+    function formatValue(v) {
+      if (v === null || v === undefined) return '—';
+      if (typeof v === 'object') {
+        if (v.$oid) return '<code class="id">' + v.$oid + '</code>';
+        return escapeHtml(JSON.stringify(v));
+      }
+      return escapeHtml(v);
+    }
+
+    async function loadCollections() {
+      const res = await fetch('/api/db-viewer/collections');
+      const data = await res.json();
+      const list = document.getElementById('collection-list');
+      list.innerHTML = (data.collections || [])
+        .map((c) => `<button data-name="${c.name}"><span>${c.name}</span><span class="count">${c.count}</span></button>`)
+        .join('');
+      list.querySelectorAll('button').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          list.querySelectorAll('button').forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+          openCollection(btn.dataset.name);
+        });
+      });
+    }
+
+    async function openCollection(name) {
+      currentCollection = name;
+      currentPage = 1;
+      await renderPage();
+    }
+
+    async function renderPage() {
+      const res = await fetch(`/api/db-viewer/collections/${currentCollection}?page=${currentPage}`);
+      const data = await res.json();
+      totalDocs = data.total || 0;
+      document.getElementById('view-title').textContent = currentCollection;
+      document.getElementById('view-sub').textContent = `${totalDocs} document${totalDocs === 1 ? '' : 's'}`;
+
+      const docs = data.docs || [];
+      const body = document.getElementById('view-body');
+      if (!docs.length) {
+        body.innerHTML = '<div class="empty">No documents in this collection.</div>';
+        document.getElementById('pager').hidden = true;
+        return;
+      }
+      const columns = [...new Set(docs.flatMap((d) => Object.keys(d)))];
+      body.innerHTML = `
+        <div style="overflow:auto; max-height: calc(100vh - 190px);">
+        <table>
+          <thead><tr>${columns.map((c) => `<th>${escapeHtml(c)}</th>`).join('')}</tr></thead>
+          <tbody>
+            ${docs.map((d) => `<tr>${columns.map((c) => `<td>${formatValue(d[c])}</td>`).join('')}</tr>`).join('')}
+          </tbody>
+        </table>
+        </div>`;
+
+      const totalPages = Math.max(1, Math.ceil(totalDocs / PAGE_SIZE));
+      document.getElementById('pager').hidden = false;
+      document.getElementById('page-label').textContent = `Page ${currentPage} of ${totalPages}`;
+      document.getElementById('prev-page').disabled = currentPage <= 1;
+      document.getElementById('next-page').disabled = currentPage >= totalPages;
+    }
+
+    document.getElementById('prev-page').addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderPage(); } });
+    document.getElementById('next-page').addEventListener('click', () => { currentPage++; renderPage(); });
+
+    loadCollections();
+  </script>
+</body>
+</html>

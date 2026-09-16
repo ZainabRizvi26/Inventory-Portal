@@ -17,4 +17,9 @@ function requireAdmin(req, res, next) {
   next();
 }
 
-module.exports = { requireAuth, requireAdmin };
+function requireSuperAdmin(req, res, next) {
+  if (!req.user?.isSuperAdmin) return res.status(403).json({ message: 'Only the main admin can perform this action.' });
+  next();
+}
+
+module.exports = { requireAuth, requireAdmin, requireSuperAdmin };
